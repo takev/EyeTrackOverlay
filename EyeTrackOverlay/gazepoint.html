@@ -1,0 +1,57 @@
+<html>
+<head>
+    
+</head>
+<body>
+    <img id="pointer" src="gazepointer.png"/>
+
+    <style>
+        body {
+            background: rgba(0, 0, 0, 0.0);
+        }
+        #pointer {
+            position: absolute;
+            left: 20px;
+            top: 15px;
+        }
+    </style>
+    <script type="text/javascript">
+        var pointer = document.getElementById("pointer");
+
+        console.log("Openeing websocket.");
+        var gazePointSocket = new WebSocket("ws://192.168.178.24:42834/gaze");
+
+        gazePointSocket.onopen = function (event) {
+            console.log("WebSocket is open now.");
+        }
+
+        gazePointSocket.onerror = function (event) {
+            console.error("WebSocket error observed:", event);
+        }
+
+        gazePointSocket.onmessage = function (event) {
+            var words = event.data.split(" ");
+            if (words[0] == "gazePoint") {
+                var x_coord = Math.floor(parseFloat(words[1]));
+                var y_coord = Math.floor(parseFloat(words[2]));
+                var valid = words[3] == "True";
+
+                if (
+                    (x_coord >= 0 && x_coord <= 2559) &&
+                    (y_coord >= 0 && y_coord <= 1079) &&
+                    valid
+                ) {
+                    pointer.style.visibility = "visible";
+                    pointer.style.left = x_coord + "px";
+                    pointer.style.top = y_coord + "px";
+                } else {
+                    pointer.style.visibility = "hidden";
+                    pointer.style.left = "0px";
+                    pointer.style.top = "0px";
+                }
+            }
+        }
+
+    </script>
+</body>
+</html>
