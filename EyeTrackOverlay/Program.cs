@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebSocketSharp;
 
+// For some reason can only be used in Debug builds.
+
 namespace EyeTrackOverlay
 {
     public class GazeServer : WebSocketSharp.Server.WebSocketBehavior
@@ -52,6 +54,7 @@ namespace EyeTrackOverlay
 
         public static void SetEyePosition(Tobii.Interaction.EyePositionData eyePosition)
         {
+            //Console.WriteLine("gaze {0}, {1}", eyePosition.HasLeftEyePosition, eyePosition.HasRightEyePosition);
             lock (gazePointLock)
             {
                 eyePositionValid = eyePosition.HasLeftEyePosition && eyePosition.HasRightEyePosition;
@@ -60,7 +63,9 @@ namespace EyeTrackOverlay
 
         public static void SetGazePoint(double x, double y)
         {
-            lock (gazePointLock) {
+            //Console.WriteLine("gaze {0}, {1}", x, y);
+            lock (gazePointLock)
+            {
                 gazePoint = Tuple.Create(x, y);
             }
         }
@@ -69,7 +74,8 @@ namespace EyeTrackOverlay
         {
             Tuple<double, double, bool> tmp;
 
-            lock (gazePointLock) {
+            lock (gazePointLock)
+            {
                 tmp = Tuple.Create(gazePoint.Item1, gazePoint.Item2, eyePositionValid);
             }
             return tmp;
@@ -92,10 +98,10 @@ namespace EyeTrackOverlay
 
             wssv.Start();
 
-            while (true)
-            {
-                Thread.Sleep(60000);
-            }
+            Console.WriteLine("Press any key to stop.");
+            Console.ReadKey(true);
+
+            wssv.Stop();
         }
     }
 }

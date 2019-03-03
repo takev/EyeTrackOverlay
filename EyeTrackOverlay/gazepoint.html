@@ -31,6 +31,7 @@
 
         gazePointSocket.onmessage = function (event) {
             var words = event.data.split(" ");
+            //console.log(words);
             if (words[0] == "gazePoint") {
                 var x_coord = Math.floor(parseFloat(words[1]));
                 var y_coord = Math.floor(parseFloat(words[2]));
