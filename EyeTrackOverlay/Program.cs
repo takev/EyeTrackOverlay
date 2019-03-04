@@ -21,7 +21,7 @@ namespace EyeTrackOverlay
             base.OnOpen(webSocket);
 
             // 60 times a second.
-            timer = new Timer(this.SendCurrentGazePoint, null, 0, 17);
+            timer = new Timer(this.SendCurrentGazePoint, null, 0, 33);
         }
 
         protected override void OnClose(CloseEventArgs e)

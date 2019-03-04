@@ -11,12 +11,24 @@
         }
         #pointer {
             position: absolute;
+            width: 32px;
+            height: 32px;
             left: 20px;
             top: 15px;
         }
     </style>
     <script type="text/javascript">
         var pointer = document.getElementById("pointer");
+
+        var screen_width = 2560;
+        var screen_height = 1080;
+        var pointer_half_width = pointer.style.width;
+        var pointer_half_height = pointer.style.height;
+
+        var min_x = pointer_half_width;
+        var max_x = screen_width - pointer_half_width;
+        var min_y = pointer_half_height;
+        var max_y = screen_height - pointer_half_height;
 
         console.log("Openeing websocket.");
         var gazePointSocket = new WebSocket("ws://192.168.178.24:42834/gaze");
@@ -38,13 +50,13 @@
                 var valid = words[3] == "True";
 
                 if (
-                    (x_coord >= 0 && x_coord <= 2559) &&
-                    (y_coord >= 0 && y_coord <= 1079) &&
+                    (x_coord >= min_x && x_coord < max_x) &&
+                    (y_coord >= min_y && y_coord < max_y) &&
                     valid
                 ) {
                     pointer.style.visibility = "visible";
-                    pointer.style.left = x_coord + "px";
-                    pointer.style.top = y_coord + "px";
+                    pointer.style.left = (x_coord - pointer_half_width) + "px";
+                    pointer.style.top = (y_coord - pointer_half_height) + "px";
                 } else {
                     pointer.style.visibility = "hidden";
                     pointer.style.left = "0px";
